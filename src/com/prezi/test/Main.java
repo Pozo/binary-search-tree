@@ -8,7 +8,7 @@ import com.prezi.collection.BinarySearchTree;
  */
 public class Main {
     public static void main(String[] args) {
-
+/*
         BinarySearchTree<Car> carPark = new BinarySearchTree<Car>();
 
         Car car1 = new Car(2,"IFA");
@@ -29,12 +29,56 @@ public class Main {
         carPark.add(car5);
         carPark.add(car6);
         carPark.add(car7);
-        /*
-
         carPark.add(car8);
         carPark.add(car9);
         carPark.add(car10);
         */
+
+        BinarySearchTree<Integer> numbers = new BinarySearchTree<Integer>();
+
+        numbers.add(4);
+        numbers.add(2);
+        numbers.add(7);
+        numbers.add(1);
+        numbers.add(3);
+        numbers.add(5);
+        numbers.add(9);
+
+        //numbers.add(22);
+        //numbers.add(-12);
+
+        System.out.println("numbers = " + numbers);
+
+        numbers.printPostorder();
+        numbers.print();
+
+        System.out.println("numbers.lookup(3) = " + numbers.lookup(22));
+        System.out.println("numbers.size() = " + numbers.size());
+        System.out.println("numbers.maxDepth() = " + numbers.maxDepth());
+        System.out.println("numbers.minDepth() = " + numbers.minDepth());
+        System.out.println("numbers.lookup() = " + numbers.lookup(33));
+        System.out.println("numbers.lookup() = " + numbers.lookup(5));
+
+        /*
         System.out.println("carPark = " + carPark);
+        System.out.println("size = " + carPark.size());
+        System.out.println("maxDepth = " + carPark.maxDepth());
+        System.out.println("minDepth = " + carPark.minDepth());
+
+        carPark.print();
+
+        System.out.println("lookup = " + carPark.lookup(car1));
+        System.out.println("lookup = " + carPark.lookup(car9));
+        //System.out.println("remove = " + carPark.remove(car9));
+        //System.out.println("remove = " + carPark.remove(car2));
+        carPark.test();
+
+        carPark.print();
+        System.out.println();
+        carPark.printPostorder();
+
+        System.out.println("car10 = ".compareTo("asd"));
+        System.out.println("asd".compareTo("car10 = "));
+        */
     }
 }
