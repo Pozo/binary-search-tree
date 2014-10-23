@@ -1,16 +1,18 @@
 package com.prezi.collection;
 
 public class BinarySearchTree<T extends Comparable<? super T>> {
-    private static class Node<T extends Comparable<? super T>> {
+    public static class Node<T extends Comparable<? super T>> {
         private Node<T> leftNode;
         private Node<T> rightNode;
 
-        private final T value;
+        private T value;
 
         public Node(T value) {
             this.value = value;
         }
-
+        public void setValue(T value) {
+            this.value = value;
+        }
         public T getValue() {
             return value;
         }
@@ -32,11 +34,8 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         public void setRightNode(Node rightNode) {
             this.rightNode = rightNode;
         }
-        @Override
-        public String toString() {
-            return "{"+ value +
-                    ", ["+ leftNode + "," + rightNode +"]" +
-                    "}";
+        public String serialize() {
+            return "{"+ value + " ["+ ((leftNode == null)?"null":leftNode.serialize()) + "," + ((rightNode == null)?"null":rightNode.serialize()) +"]}";
         }
     }
 
@@ -48,6 +47,9 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
 		
 	}
     public void add(T value) {
+        if(value == null) {
+            return;
+        }
         if(root == null) {
             root = new Node<T>(value);
         } else {
@@ -71,6 +73,9 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
             // duplicated entry not allowed
         }
     }
+    private void setRootNode(Node<T> root) {
+        this.root = root;
+    }
     private boolean newValueLessThanCurrent(Node<T> node, Node<T> newNode) {
         return newValueLessThanCurrent(node,newNode.getValue());
     }
@@ -78,87 +83,76 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         return newValueIsGreaterThanCurrent(node, newNode.getValue());
     }
     private boolean newValueLessThanCurrent(Node<T> node, T newValue) {
+        if(node == null) {
+            return false;
+        }
         return newValue.compareTo(node.getValue()) < 0;
     }
     private boolean newValueIsGreaterThanCurrent(Node<T> node, T newValue) {
+        if(node == null) {
+            return false;
+        }
         return newValue.compareTo(node.getValue()) > 0;
     }
     public boolean lookup(T value) {
         if (root == null) {
             return(false);
         } else {
-            if(lookup(root, value) != null) {
-                return true;
-            } else {
-                return false;
-            }
+            return lookup(root, value);
         }
     }
-    private Node<T> lookup(Node<T> node, T nodeValue) {
-        if(nodeValue == null) {
-            return null;
+    private boolean lookup(Node<T> node, T nodeValue) {
+        if(node == null || nodeValue == null) {
+            return false;
         }
         if(nodeValue.equals(node.getValue())) {
-            return node;
+            return true;
         }
         if(newValueIsGreaterThanCurrent(node, nodeValue)) {
-            if(node.rightNodeIsExists()) {
-                return lookup(node.getRightNode(),nodeValue);
-            } else {
-                return null;
-            }
+            return lookup(node.getRightNode(),nodeValue);
         } else if(newValueLessThanCurrent(node, nodeValue)) {
-            if(node.leftNodeIsExists()) {
-                return lookup(node.getLeftNode(), nodeValue);
-            } else {
-                return null;
-            }
+            return lookup(node.getLeftNode(), nodeValue);
         } else {
-            return null;
+            return false;
         }
     }
-    /*
+
     public boolean remove(T value) {
         if (root == null) {
             return false;
         } else {
-            Node<T> node;
-
-            if((node = root.lookup(value)) != null) {
-                return node.remove();
-            } else {
-                return false;
-            }
+            return remove(null, root, value);
         }
     }
-
-    public boolean remove(T value) {
-        if (value == null) {
+    private boolean remove(Node<T> parent, Node<T> node,T nodeValue) {
+        if(node == null || nodeValue == null) {
             return false;
         }
-        if (value.compareTo(getValue()) > 0) {
-            if (rightNodeIsExists() && value.equals(rightNode.getValue())) {
-                System.out.println("getRightNode() = " + getRightNode().getRightNode());
-                setRightNode(getRightNode().getRightNode());
-                setRightNode(null);
-
-                return true;
-            } else {
-                return ((rightNodeIsExists()) ? rightNode.remove(value) : false);
-            }
+        /* http://www.algolist.net/Data_structures/Binary_search_tree/Removal */
+        if(newValueIsGreaterThanCurrent(node, nodeValue)) {
+            return remove(node, node.getRightNode(),nodeValue);
+        } else if(newValueLessThanCurrent(node, nodeValue)) {
+            return remove(node, node.getLeftNode(), nodeValue);
         } else {
-            if (leftNodeIsExists() && value.equals(leftNode.getValue())) {
-                System.out.println("leftNode = " + getLeftNode());
-                setLeftNode(getLeftNode().getLeftNode());
-                setLeftNode(null);
-
-                return true;
-            } else {
-                return ((leftNodeIsExists()) ? leftNode.remove(value) : false);
-            }
+            return doRemove(parent, node, nodeValue);
         }
     }
-    */
+
+    private boolean doRemove(Node<T> parent, Node<T> node, T nodeValue) {
+        if(parent == null || (node.rightNodeIsExists() && node.leftNodeIsExists())) {
+            T value = findMin(node.getRightNode()).getValue();
+            System.out.println("value = " + value);
+            node.setValue(value);
+            remove(node, node.getRightNode(), value);
+        }else if(parent.rightNodeIsExists() && parent.getRightNode().equals(node)) {
+            parent.setRightNode(node.getRightNode());
+        } else if (parent.leftNodeIsExists() && parent.getLeftNode().equals(node)) {
+
+            parent.setLeftNode(node.getLeftNode());
+        }
+        return true;
+    }
+
     public int size() {
         if (root == null) {
             return 0;
@@ -199,7 +193,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
                 Math.max(lDepth, rDepth));
     }
     public Node<T> findMin(Node<T> node) {
-        if(node.getLeftNode() == null) {
+        if(node != null && node.getLeftNode() == null) {
             return node;
         } else {
             return findMin(node.getLeftNode());
@@ -238,10 +232,70 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
             print(node.getRightNode());
         }
     }
-    @Override
-    public String toString() {
-        return "BinarySearchTree{" +
-                "root=" + root +
-                '}';
+    public String serialize() {
+        if (root == null) {
+            return "";
+        } else {
+            return root.serialize();
+        }
+    }
+
+    public static <T extends Comparable<? super T>> BinarySearchTree deserialize(String string) {
+        if (string == null) {
+            return null;
+        }
+        BinarySearchTree<T> bst = new BinarySearchTree<T>();
+        bst.setRootNode(parse(string));
+        return bst;
+    }
+    private static <T extends Comparable<? super T>> Node parse(String string) {
+        if (string == null) {
+            return null;
+        }
+        String removeFirst = string.replaceFirst("\\[", "");
+        StringBuilder builder = new StringBuilder(removeFirst);
+        int start = removeFirst.lastIndexOf("]");
+        builder.replace(start, start + 1, "");
+        String nodeValueAndChildren = builder.toString();
+
+        String[] leftRightNodeValue = nodeValueAndChildren.split(",",2);
+        String nodeValue = (String) leftRightNodeValue[0];
+        String childNodeValues = leftRightNodeValue[1];
+
+        BinarySearchTree.Node<String> node = new BinarySearchTree.Node<String>(nodeValue);
+
+        if(childNodeValues.startsWith("[")) {
+            int leftBracket = 0;
+            int rightBracket = 0;
+
+            for (int i = 0;i<childNodeValues.length();i++) {
+                if(Character.valueOf(childNodeValues.charAt(i)).equals('[')) {
+                    leftBracket++;
+                } else if(Character.valueOf(childNodeValues.charAt(i)).equals(']')) {
+                    rightBracket++;
+                }
+                if(leftBracket == rightBracket) {
+                    String leftNode = childNodeValues.substring(0,i+1);
+                    String right = childNodeValues.substring(i+2,childNodeValues.length());
+
+                    if(!right.equals("null")) {
+                        node.setRightNode(parse(right));
+                    }
+                    if(!leftNode.equals("null")) {
+                        node.setLeftNode(parse(leftNode));
+                    }
+
+                    break;
+                }
+            }
+
+        } else {
+            String[] keyLeftRightNodes = childNodeValues.split(",", 2);
+
+            if(!keyLeftRightNodes[1].equals("null")) {
+                node.setRightNode(parse(keyLeftRightNodes[1]));
+            }
+        }
+        return node;
     }
 }
