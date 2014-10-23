@@ -1,7 +1,7 @@
 package com.prezi.collection;
 
 public class BinarySearchTree<T extends Comparable<? super T>> {
-    public static class Node<T extends Comparable<? super T>> {
+    private static class Node<T extends Comparable<? super T>> {
         private Node<T> leftNode;
         private Node<T> rightNode;
 
@@ -35,7 +35,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
             this.rightNode = rightNode;
         }
         public String serialize() {
-            return "{"+ value + " ["+ ((leftNode == null)?"null":leftNode.serialize()) + "," + ((rightNode == null)?"null":rightNode.serialize()) +"]}";
+            return "["+ value + ","+ ((leftNode == null)?"null":leftNode.serialize()) + "," + ((rightNode == null)?"null":rightNode.serialize()) +"]";
         }
     }
 
