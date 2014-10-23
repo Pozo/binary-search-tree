@@ -141,7 +141,6 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
     private boolean doRemove(Node<T> parent, Node<T> node, T nodeValue) {
         if(parent == null || (node.rightNodeIsExists() && node.leftNodeIsExists())) {
             T value = findMin(node.getRightNode()).getValue();
-            System.out.println("value = " + value);
             node.setValue(value);
             remove(node, node.getRightNode(), value);
         }else if(parent.rightNodeIsExists() && parent.getRightNode().equals(node)) {
@@ -215,22 +214,18 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         }
         System.out.print(node.getValue() + SEPARATOR);
     }
-    public void print() {
+    public String tree() {
         if (root == null) {
-            return;
+            return "";
         } else {
-            print(root);
+            return tree(root);
         }
     }
-    public void print(Node<T> node) {
-        System.out.print(node.getValue() + SEPARATOR);
+    public String tree(Node<T> node) {
+        String lDepth = ((node.leftNodeIsExists())? tree(node.getLeftNode()) : "");
+        String  rDepth = ((node.rightNodeIsExists())? tree(node.getRightNode()): "");
 
-        if(node.leftNodeIsExists()) {
-            print(node.getLeftNode());
-        }
-        if(node.rightNodeIsExists()) {
-            print(node.getRightNode());
-        }
+        return node.getValue() + SEPARATOR + lDepth + rDepth;
     }
     public String serialize() {
         if (root == null) {

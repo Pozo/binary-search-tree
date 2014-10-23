@@ -2,7 +2,6 @@ package com.prezi.collection;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -108,7 +107,6 @@ public class BinarySearchTreeTest {
         testInt.add(2);
 
         testInt.remove(0);
-        System.out.println("testInt testRemoveRoot = " + testInt.serialize());
         assertEquals(2, testInt.size());
     }
     @Test
@@ -240,18 +238,53 @@ public class BinarySearchTreeTest {
         testInt.add(1);
         testInt.add(-1);
         testInt.add(3);
-        testInt.add(-3);
-        testInt.add(4);
-        testInt.add(2);
-        testInt.add(-2);
-        testInt.add(6);
+
+        assertEquals("0,-1,1,3,", testInt.tree());
+        testInt.remove(3);
+        assertEquals("0,-1,1,", testInt.tree());
+    }
+    @Test
+    public void testFindMinYay() throws Exception {
         testInt.add(5);
-        testInt.add(-5);
+        testInt.add(2);
+        testInt.add(18);
+        testInt.add(-4);
+        testInt.add(3);
+        testInt.add(21);
+        testInt.add(19);
+        testInt.add(25);
 
-        testInt.remove(0);
-        testInt.add(0);
+        assertEquals("5,2,-4,3,18,21,19,25,", testInt.tree());
+        testInt.remove(18);
+        assertEquals("5,2,-4,3,21,19,25,", testInt.tree());
+    }
+    @Test
+    public void testFindMinYayTwo() throws Exception {
+        testInt.add(5);
+        testInt.add(2);
+        testInt.add(12);
+        testInt.add(-4);
+        testInt.add(3);
+        testInt.add(9);
+        testInt.add(21);
+        testInt.add(19);
+        testInt.add(25);
 
-        //assertEquals(9, testInt.size());
+        assertEquals("5,2,-4,3,12,9,21,19,25,", testInt.tree());
+        testInt.remove(12);
+        assertEquals("5,2,-4,3,19,9,21,25,", testInt.tree());
+    }
+    @Test
+    public void testFindMinYayThree() throws Exception {
+        testInt.add(5);
+        testInt.add(2);
+        testInt.add(18);
+        testInt.add(-4);
+        testInt.add(3);
+
+        assertEquals("5,2,-4,3,18,", testInt.tree());
+        testInt.remove(-4);
+        assertEquals("5,2,3,18,", testInt.tree());
     }
     @Test
     public void testPrintPostorder() throws Exception {
@@ -264,13 +297,28 @@ public class BinarySearchTreeTest {
     }
 
     @Test
-    public void testPrint() throws Exception {
+    public void testTree() throws Exception {
+        testInt.add(5);
+        testInt.add(2);
+        testInt.add(33);
+        testInt.add(-22);
+        testInt.add(-2);
+        testInt.add(4);
 
+        assertEquals("5,2,-22,-2,4,33,",testInt.tree());
     }
 
     @Test
-    public void testPrint1() throws Exception {
+    public void testTree1() throws Exception {
+        testInt.add(0);
+        testInt.add(1);
+        testInt.add(2);
+        testInt.add(3);
+        testInt.add(4);
+        testInt.add(5);
+        testInt.add(-1);
 
+        assertEquals("0,-1,1,2,3,4,5,",testInt.tree());
     }
 
     @Test
@@ -303,7 +351,6 @@ public class BinarySearchTreeTest {
         String serializedValue = "[21,[17,null,null],[81,[62,[58,[31,null,[36,null,null]],null],[77,[68,null,null],null]],[82,null,[91,null,null]]]]";
 
         BinarySearchTree<String> bst = BinarySearchTree.<String>deserialize(serializedValue);
-        System.out.println("bst = " + bst.serialize());
         assertEquals(true, bst.serialize().equals(serializedValue));
     }
 }
